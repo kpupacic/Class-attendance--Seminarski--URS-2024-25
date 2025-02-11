@@ -1,13 +1,15 @@
-import "./globals.css"
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { AuthProvider } from "../components/AuthProvider"
-import type React from "react" // Added import for React
+import { Toaster } from "sonner"
+import "./globals.css"
+import type React from "react" // Import React
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Student Presence Tracker",
   description: "Track student attendance using QR codes",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -16,11 +18,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="hr">
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   )
 }
 
+
+
+import './globals.css'
