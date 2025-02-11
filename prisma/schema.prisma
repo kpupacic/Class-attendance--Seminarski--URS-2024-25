@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Professor {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  groups     Group[]  @relation("ProfessorGroups") // This relation points to the Group model
+}
+
+model Student {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  groups     Group[]  @relation("StudentGroups")
+  attendance Attendance[]
+}
+
+model Subject {
+  id         String     @id @default(uuid())
+  name       String
+  type       SubjectType
+  groups     Group[]
+}
+
+model Group {
+  id          String      @id @default(uuid())
+  name        String
+  subjectId   String
+  subject     Subject     @relation(fields: [subjectId], references: [id])
+  professorId String
+  professor   Professor   @relation("ProfessorGroups", fields: [professorId], references: [id]) // Updated to match the relation name
+  students    Student[]   @relation("StudentGroups")
+  attendance  Attendance[]
+}
+
+model Attendance {
+  id         String   @id @default(uuid())
+  studentId  String
+  student    Student  @relation(fields: [studentId], references: [id])
+  groupId    String
+  group      Group    @relation(fields: [groupId], references: [id])
+  date       DateTime @default(now())
+  present    Boolean
+}
+
+enum SubjectType {
+  PREDAVANJE
+  AUDITORNE_VJEZBE
+  LABORATORIJSKE_VJEZBE
+}
