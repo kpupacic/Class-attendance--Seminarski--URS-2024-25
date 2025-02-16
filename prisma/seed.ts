@@ -34,45 +34,158 @@ async function main() {
     )
   );
 
-  // Create Professor (Example data)
-  const professor = await prisma.professor.create({
-    data: {
-      name: "Dr. John Doe",
-      email: "john.doe@example.com",
-    },
-  });
+  const professors = await Promise.all([
+    prisma.professor.upsert({
+      where: { email: "josipa.baric@example.com" },
+      update: {}, // No changes needed if the professor already exists
+      create: {
+        name: "Josipa Baric",
+        email: "josipa.baric@example.com",
+      },
+    }),
+    prisma.professor.upsert({
+      where: { email: "dajana.dujic@example.com" },
+      update: {},
+      create: {
+        name: "Dajana Dujic",
+        email: "dajana.dujic@example.com",
+      },
+    }),
+    prisma.professor.upsert({
+      where: { email: "damir.lelas@example.com" },
+      update: {},
+      create: {
+        name: "Damir Lelas",
+        email: "damir.lelas@example.com",
+      },
+    }),
+    prisma.professor.upsert({
+      where: { email: "duje.giljanovic@example.com" },
+      update: {},
+      create: {
+        name: "Duje Giljanovic",
+        email: "duje.giljanovic@example.com",
+      },
+    }),
+    prisma.professor.upsert({
+      where: { email: "mirjana.bonkovic@example.com" },
+      update: {},
+      create: {
+        name: "Mirjana Bonkovic",
+        email: "mirjana.bonkovic@example.com",
+      },
+    }),
+  ]);
 
   // Create Groups and link them to subjects and professors
   const groups = await Promise.all(
     GROUPS.map((groupName, index) =>
       prisma.group.create({
         data: {
-          name: groupName, // Group name can be simplified since we already have subjectId
-          subjectId: subjects[index % subjects.length].id, // Link to subject
-          professorId: professor.id, // Link to professor
+          name: groupName,
+          subjectId: subjects[index % subjects.length].id,
+          professorId: professors[index % professors.length].id, // Selecting professor based on index
         },
       })
     )
   );
 
-  // Create a Student (Example data)
-  const student = await prisma.student.create({
-    data: {
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-    },
-  });
-
-  // Add Student to all Groups
-  for (const group of groups) {
-    await prisma.group.update({
-      where: { id: group.id },
-      data: {
-        students: {
-          connect: { id: student.id },
-        },
+  // Create Students (Example data)
+  const students = await Promise.all([
+    prisma.student.upsert({
+      where: { email: "ivan.horvat@example.com" },
+      update: {},
+      create: {
+        name: "Ivan Horvat",
+        email: "ivan.horvat@example.com",
       },
-    });
+    }),
+    prisma.student.upsert({
+      where: { email: "ana.kovac@example.com" },
+      update: {},
+      create: {
+        name: "Ana Kovac",
+        email: "ana.kovac@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "marko.maric@example.com" },
+      update: {},
+      create: {
+        name: "Marko Maric",
+        email: "marko.maric@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "petra.novak@example.com" },
+      update: {},
+      create: {
+        name: "Petra Novak",
+        email: "petra.novak@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "lucija.juric@example.com" },
+      update: {},
+      create: {
+        name: "Lucija Juric",
+        email: "lucija.juric@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "stjepan.bosnjak@example.com" },
+      update: {},
+      create: {
+        name: "Stjepan Bosnjak",
+        email: "stjepan.bosnjak@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "marija.saric@example.com" },
+      update: {},
+      create: {
+        name: "Marija Saric",
+        email: "marija.saric@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "nikola.mikic@example.com" },
+      update: {},
+      create: {
+        name: "Nikola Mikic",
+        email: "nikola.mikic@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "ivana.babic@example.com" },
+      update: {},
+      create: {
+        name: "Ivana Babic",
+        email: "ivana.babic@example.com",
+      },
+    }),
+    prisma.student.upsert({
+      where: { email: "matej.vidovic@example.com" },
+      update: {},
+      create: {
+        name: "Matej Vidovic",
+        email: "matej.vidovic@example.com",
+      },
+    }),
+  ]);
+
+  // Add Students to all Groups
+  for (const group of groups) {
+    for (const student of students) {
+      await prisma.group.update({
+        where: { id: group.id },
+        data: {
+          students: {
+            connect: { id: student.id },
+          },
+        },
+      });
+    }
   }
 
   console.log("Seeding complete!");
