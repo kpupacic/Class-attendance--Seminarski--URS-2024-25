@@ -31,7 +31,7 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl text-center text-blue-600">Sustav Praćenja Prisutnosti Studenata</CardTitle>
+        <CardTitle className="text-2xl text-center text-blue-600">Sustav Praćenja Prisutnosti</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,10 +52,10 @@ export function LoginForm() {
         </form>
 
         <div className="mt-6 text-sm text-muted-foreground">
-          <p className="mb-2">Za testiranje, koristite ove podatke:</p>
+          <p className="mb-2">Primjer podataka za prijavu:</p>
           <ul className="space-y-1">
-            <li>• Profesor: email: professor@example.com, lozinka: prof123</li>
-            <li>• Student: email: student@example.com, lozinka: stud123</li>
+            <li>• Profesor: email: josipa.baric@example.com, lozinka: prof123</li>
+            <li>• Student: email: ivan.horvat@example.com, lozinka: stud123</li>
           </ul>
         </div>
       </CardContent>

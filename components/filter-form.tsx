@@ -34,6 +34,24 @@ export function FilterForm({ title, onSubmit, buttonText }: FilterFormProps) {
       </CardHeader>
       <CardContent className="space-y-6 pt-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+
+        <div className="space-y-2">
+            <label className="font-medium">Predmet</label>
+            <Select value={subject} onValueChange={setSubject}>
+              <SelectTrigger>
+                <SelectValue placeholder="Odaberi predmet" />
+              </SelectTrigger>
+              <SelectContent>
+                {SUBJECTS.map((subj) => (
+                  <SelectItem key={subj} value={subj}>
+                    {subj}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+
           <div className="space-y-2">
             <label className="font-medium">Tip nastave</label>
             <Select value={selectedType} onValueChange={setSelectedType}>
@@ -50,21 +68,6 @@ export function FilterForm({ title, onSubmit, buttonText }: FilterFormProps) {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <label className="font-medium">Predmet</label>
-            <Select value={subject} onValueChange={setSubject}>
-              <SelectTrigger>
-                <SelectValue placeholder="Odaberi predmet" />
-              </SelectTrigger>
-              <SelectContent>
-                {SUBJECTS.map((subj) => (
-                  <SelectItem key={subj} value={subj}>
-                    {subj}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
 
           <div className="space-y-2">
             <label className="font-medium">Grupa</label>
