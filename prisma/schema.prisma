@@ -17,47 +17,98 @@ model Professor {
   id         String   @id @default(uuid())
   name       String
   email      String   @unique
-  groups     Group[]  @relation("ProfessorGroups") // This relation points to the Group model
+  subjects   ProfessorSubject[]
+  groups     Group[] @relation("ProfessorGroups")
 }
 
 model Student {
   id         String   @id @default(uuid())
   name       String
   email      String   @unique
-  groups     Group[]  @relation("StudentGroups")
+  subjects   StudentSubject[]
   attendance Attendance[]
+  groups     GroupStudent[]
 }
 
 model Subject {
   id         String     @id @default(uuid())
   name       String
-  type       SubjectType
+  subjectTypes SubjectSubjectType[]
+  professors ProfessorSubject[]
+  students   StudentSubject[]
   groups     Group[]
+  attendance Attendance[] // Add this line
 }
 
 model Group {
-  id          String      @id @default(uuid())
-  name        String
-  subjectId   String
-  subject     Subject     @relation(fields: [subjectId], references: [id])
-  professorId String
-  professor   Professor   @relation("ProfessorGroups", fields: [professorId], references: [id]) // Updated to match the relation name
-  students    Student[]   @relation("StudentGroups")
-  attendance  Attendance[]
+  id            String      @id @default(uuid())
+  name          String
+  subjectId     String      // Foreign key to the Subject model
+  subject       Subject     @relation(fields: [subjectId], references: [id]) // Relation field to access the related Subject
+  subjectTypeId String      // Foreign key to the SubjectType model
+  subjectType   SubjectType @relation(fields: [subjectTypeId], references: [id]) // Relation field to access the related SubjectType
+  professorId   String
+  professor     Professor   @relation("ProfessorGroups", fields: [professorId], references: [id])
+  students      GroupStudent[]
+  attendance    Attendance[]
+}
+
+model SubjectType {
+  id   String @id @default(uuid())
+  name String @unique
+  subjects SubjectSubjectType[]
+  groups   Group[]
+  attendance Attendance[] // Add this line
 }
 
 model Attendance {
-  id         String   @id @default(uuid())
-  studentId  String
-  student    Student  @relation(fields: [studentId], references: [id])
-  groupId    String
-  group      Group    @relation(fields: [groupId], references: [id])
-  date       DateTime @default(now())
-  present    Boolean
+  id            String   @id @default(uuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  groupId       String
+  group         Group    @relation(fields: [groupId], references: [id])
+  subjectId     String
+  subject       Subject  @relation(fields: [subjectId], references: [id])
+  subjectTypeId String
+  subjectType   SubjectType @relation(fields: [subjectTypeId], references: [id])
+  date          DateTime @default(now())
+  present       Boolean
+
+  @@unique([studentId, groupId, date])
 }
 
-enum SubjectType {
-  PREDAVANJE
-  AUDITORNE_VJEZBE
-  LABORATORIJSKE_VJEZBE
+model ProfessorSubject {
+  professorId String
+  subjectId   String
+  professor   Professor @relation(fields: [professorId], references: [id])
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+
+  @@id([professorId, subjectId])
+}
+
+model StudentSubject {
+  studentId String
+  subjectId String
+  student   Student @relation(fields: [studentId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id])
+
+  @@id([studentId, subjectId])
+}
+
+model GroupStudent {
+  groupId   String
+  studentId String
+  group     Group   @relation(fields: [groupId], references: [id])
+  student   Student @relation(fields: [studentId], references: [id])
+
+  @@id([groupId, studentId])
+}
+
+model SubjectSubjectType {
+  subjectId     String
+  subjectTypeId String
+  subject       Subject     @relation(fields: [subjectId], references: [id])
+  subjectType   SubjectType @relation(fields: [subjectTypeId], references: [id])
+
+  @@id([subjectId, subjectTypeId])
 }
