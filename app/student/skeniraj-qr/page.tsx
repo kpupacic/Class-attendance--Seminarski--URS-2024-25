@@ -8,7 +8,7 @@ export default function ScanQRPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-blue-600">Skeniraj QR Kod</h1>
         <Link href="/student">
-          <Button variant="outline">Natrag</Button>
+          <Button variant="outline">Povratak</Button>
         </Link>
       </div>
       <QRScanner />

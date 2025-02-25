@@ -8,7 +8,7 @@ export default function GenerateQRPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-600">Generiranje QR Koda</h1>
         <Link href="/profesor">
-          <Button variant="outline">Natrag</Button>
+          <Button variant="outline">Povratak</Button>
         </Link>
       </div>
       <QRGeneratorForm />

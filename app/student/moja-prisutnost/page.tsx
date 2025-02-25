@@ -41,7 +41,7 @@ export default function AttendancePage() {
   }, []);
 
   if (!studentData) {
-    return <div>Loading...</div>;
+    return <div>Učitavanje podataka...</div>;
   }
 
   return (
@@ -49,28 +49,42 @@ export default function AttendancePage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-600">Evidencija prisutnosti: {studentData.name}</h1>
         <Link href="/student">
-          <Button variant="outline">Back</Button>
+          <Button variant="outline">Povratak</Button>
         </Link>
       </div>
-
-      {studentData.subjects.map((subject: any, index: number) => (
-        <div key={index}>
-          <h2 className="text-xl font-bold text-blue-600">{subject.subject.name}</h2>
+      {studentData.subjects.map((subject: any, subjectIndex: number) => (
+        <div key={subjectIndex} className="mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">{subject.subject.name}</h2>
           {subjectTypes
             .filter((type) => studentData.attendance.some((attendance: any) => attendance.subjectId === subject.subject.id && attendance.subjectTypeId === type.id))
-            .map((type) => (
-              <div key={type.id}>
-                <h3 className="text-lg font-bold text-blue-600">{type.name}</h3>
-                <ul className="list-disc pl-5">
-                  {studentData.attendance
-                    .filter((attendance: any) => attendance.subjectId === subject.subject.id && attendance.subjectTypeId === type.id)
-                    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                    .map((attendance: any, index: number) => (
-                      <li key={index}>
-                        {new Date(attendance.date).toLocaleDateString()} {attendance.present ? "+" : "-"}
-                      </li>
-                    ))}
-                </ul>
+            .map((type, typeIndex) => (
+              <div key={typeIndex} className="mb-4">
+                <h3 className="text-md font-medium text-gray-700 mb-2">{type.name}</h3>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Datum</th>
+                      <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Prisutnost</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {studentData.attendance
+                      .filter((attendance: any) => attendance.subjectId === subject.subject.id && attendance.subjectTypeId === type.id)
+                      .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .map((attendance: any, attendanceIndex: number) => (
+                        <tr key={`${subjectIndex}-${typeIndex}-${attendanceIndex}`}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(attendance.date).toLocaleDateString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                            {attendance.present ? (
+                              <span className="text-green-500">+</span>
+                            ) : (
+                              <span className="text-red-500">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
               </div>
             ))}
         </div>
